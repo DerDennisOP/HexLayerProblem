@@ -1,2 +1,2 @@
 # HexLayerProblem
-Attempting methods to solf the Hex Layer Problem
+Attempting methods to solve the Hex Layer Problem
