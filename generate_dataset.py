@@ -38,12 +38,12 @@ class Layer():
         return "*" if m else ""
 
     def comperator(self, x: int, s: int, m: bool = False) -> int:
-        if m:
-            y = x - s
-            y = y if y >= 0 else 0
-            return y if y >= s else 0
-        else:
-            return 0 if x < s else x
+            if s > x:
+                return 0
+            elif m:
+                return x - s
+            else:
+                return x
 
     def run(self, x: int) -> int:
         global precalc_rev
@@ -133,6 +133,10 @@ class Function():
     
     def add_offset_invert_max(self, offset_left: int, invert_max: int, infront: bool = False):
         self.add_layer(Layer(offset_left, invert_max, True, True), infront)
+    
+    def set_precalculate(self, precalc: bool):
+        for layer in self.layers:
+            layer.precalc = precalc
 
     def run(self, x: int) -> int:
         for i in range(len(self.layers)):
@@ -158,7 +162,10 @@ get_random_layer()
 print(precalc.shape)
 
 # func = get_random_function(pass_check=True)
-func = Function("6411 5911 da11")
+# func = Function("6411 5911 da11")
+func = Function("0e01 7f11 1c01 1e01 8000")
+#func = Function("8000 1e01 1c01 7f11 0e01")
+func.set_precalculate(False)
 print(func.run_all())
 print(func)
 
