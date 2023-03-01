@@ -18,27 +18,27 @@ def layerp (precalc:[][]u8) (precalcid:i64) (x:[]u8):[]u8 =
         precalc[precalcid, (i64.u8 inputx)]
     ) x
 
-def main: (bool, i16, i16, i16) =
+def main: (bool, []u8, []u8, []u8) =
     let boolen = [0u8, 1u8] in
     let input = [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
-    let target = [0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8] in
-    --let target = [10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 6u8, 7u8] in
+    --let target = [0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8] in
+    let target = [10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 6u8, 7u8] in
     --let target = [0u8, 1u8, 2u8, 3u8, 0u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
 
     let depth = 5000i32 in
 
-    let precalc =
-    (flatten (flatten (flatten (map (\(s1: u8) ->
+    let (precalc, idconv) =
+    (unzip2 (flatten (flatten (flatten (map (\(s1: u8) ->
         map (\(s2: u8) ->
             map (\(c1: u8) ->
                 map (\(c2: u8) ->
-                    map (\(inputx: u8) ->
-                        layer inputx s1 s2 (bool.u8 c1) (bool.u8 c2)
-                    ) input
+                    ((map (\(inputx: u8) ->
+                        (layer inputx s1 s2 (bool.u8 c1) (bool.u8 c2))
+                    ) input), [s1, s2, c1, c2])
                 ) boolen
             ) boolen
         ) input
-    ) input)))) in
+    ) input))))) in
 
     let precalcindc = (indices precalc) in
 
@@ -60,6 +60,6 @@ def main: (bool, i16, i16, i16) =
         --(unzip4(triplayer))[0] in
         --(3u8, [0u8, 0u8, 0u8], true) in
 
-    (triplayer1, triplayer2, triplayer3, triplayer4)
+    (triplayer1, idconv[triplayer2], idconv[triplayer3], idconv[triplayer4])
     --batch[0][0][0][0][0][0][0][0][0][0][0][0]
     -- loop () for i in batch
