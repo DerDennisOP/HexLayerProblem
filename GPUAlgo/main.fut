@@ -19,7 +19,7 @@ def layerp (precalc:[][]u8) (precalcid:i64) (x:[]u8):[]u8 =
     ) x
 
 def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
-    let batchsize = 2i64
+    let batchsize = 64i64
     let boolen = [0u8, 1u8] in
     let input = [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
     --let target = [0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8] in
@@ -45,7 +45,7 @@ def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
 
     let precalcindc = (indices precalc) in
 
-    let indcpre = map (\(l: i64) -> [0i64+(batchsize*l), 1i64+(batchsize*l), 2i64+(batchsize*l), 3i64+(batchsize*l), 4i64+(batchsize*l), 5i64+(batchsize*l), 6i64+(batchsize*l), 7i64+(batchsize*l)]) iotalen
+    let indcpre = map (\(l: i64) -> (map (\(i: i64) -> (i+(batchsize*l))) (iota batchsize))) iotalen
 
     let indc = (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
         map (\(l2: i64) ->
@@ -71,12 +71,12 @@ def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
                         map (\(l5: i64) ->
                             map (\(l6: i64) ->
                                 ((layerp precalc l1 (layerp precalc l2 (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))))) == target), [i16.i64 l1, i16.i64 l2, i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6])
-                            ) indc[i][5]
-                        ) indc[i][4]
-                    ) indc[i][3]
-                ) indc[i][2]
-            ) indc[i][1]
-        ) indc[i][0]))))))) in
+                            ) indc[i, 5]
+                        ) indc[i, 4]
+                    ) indc[i, 3]
+                ) indc[i, 2]
+            ) indc[i, 1]
+        ) indc[i, 0]))))))) in
 
         let getidx = (findidx true triplayer1) in
 
