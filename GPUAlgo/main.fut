@@ -41,46 +41,60 @@ def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
         ) input
     ) input))))) in
 
-    let iotalen = (iota (1024/batchsize)) in
+    --let iotalen = (iota (1024/batchsize)) in
 
-    let precalcindc = (indices precalc) in
+    --let precalcindc = (indices precalc) in
 
-    let indcpre = map (\(l: i64) -> (map (\(i: i64) -> (i+(batchsize*l))) (iota batchsize))) iotalen
+    --let indcpre = map (\(l: i64) -> (map (\(i: i64) -> (i+(batchsize*l))) (iota batchsize))) iotalen
 
-    let indc = (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
-        map (\(l2: i64) ->
-            map (\(l3: i64) ->
-                map (\(l4: i64) ->
-                    map (\(l5: i64) ->
-                        map (\(l6: i64) ->
-                            [indcpre[l1], indcpre[l2], indcpre[l3], indcpre[l4], indcpre[l5], indcpre[l6]]
-                        ) iotalen
-                    ) iotalen
-                ) iotalen
-            ) iotalen
-        ) iotalen
-    ) iotalen)))))) in
+    --let indc = (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
+    --    map (\(l2: i64) ->
+    --        map (\(l3: i64) ->
+    --            map (\(l4: i64) ->
+    --                map (\(l5: i64) ->
+    --                    map (\(l6: i64) ->
+    --                        [indcpre[l1], indcpre[l2], indcpre[l3], indcpre[l4], indcpre[l5], indcpre[l6]]
+    --                    ) iotalen
+    --                ) iotalen
+    --            ) iotalen
+    --        ) iotalen
+    --    ) iotalen
+    --) iotalen)))))) in
+    let (i1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i1, i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i1 < batchsize) || res1) do
+    let (i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i2 < batchsize) || res1) do
+    let (i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i3 < batchsize) || res1) do
+    let (i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i4 < batchsize) || res1) do
+    let (i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i5 < batchsize) || res1) do
+        let (i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+        loop (i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i6 < batchsize) || res1) do
+            let (triplayer1, triplayer2) =
+            (unzip (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
+                map (\(l2: i64) ->
+                    map (\(l3: i64) ->
+                        map (\(l4: i64) ->
+                            map (\(l5: i64) ->
+                                map (\(l6: i64) ->
+                                    ((layerp precalc l1 (layerp precalc l2 (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))))) == target), [i16.i64 l1, i16.i64 l2, i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6])
+                                ) (map (\(i: i64) -> (i+(batchsize*i6))) (iota batchsize))
+                            ) (map (\(i: i64) -> (i+(batchsize*i5))) (iota batchsize))
+                        ) (map (\(i: i64) -> (i+(batchsize*i4))) (iota batchsize))
+                    ) (map (\(i: i64) -> (i+(batchsize*i3))) (iota batchsize))
+                ) (map (\(i: i64) -> (i+(batchsize*i2))) (iota batchsize))
+            ) (map (\(i: i64) -> (i+(batchsize*i1))) (iota batchsize))))))))) in
 
-    let (triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (res1, res2, res3, res4, res5, res6, res7) = (false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) for i < (length indc) do
-        let (triplayer1, triplayer2) =
-        (unzip (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
-            map (\(l2: i64) ->
-                map (\(l3: i64) ->
-                    map (\(l4: i64) ->
-                        map (\(l5: i64) ->
-                            map (\(l6: i64) ->
-                                ((layerp precalc l1 (layerp precalc l2 (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))))) == target), [i16.i64 l1, i16.i64 l2, i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6])
-                            ) indc[i, 5]
-                        ) indc[i, 4]
-                    ) indc[i, 3]
-                ) indc[i, 2]
-            ) indc[i, 1]
-        ) indc[i, 0]))))))) in
+            let getidx = (findidx true triplayer1) in
 
-        let getidx = (findidx true triplayer1) in
-
-        (triplayer1[getidx], triplayer2[getidx][0], triplayer2[getidx][1], triplayer2[getidx][2], triplayer2[getidx][3], triplayer2[getidx][4], triplayer2[getidx][5]) in
+            (i6+1, triplayer1[getidx], triplayer2[getidx, 0], triplayer2[getidx, 1], triplayer2[getidx, 2], triplayer2[getidx, 3], triplayer2[getidx, 4], triplayer2[getidx, 5]) in
+        (i5+1, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i4+1, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i3+1, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i2+1, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i1+1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
         --(unzip4(triplayer))[0] in
         --(3u8, [0u8, 0u8, 0u8], true) in
 
