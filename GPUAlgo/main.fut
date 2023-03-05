@@ -19,12 +19,13 @@ def layerp (precalc:[][]u8) (precalcid:i64) (x:[]u8):[]u8 =
     ) x
 
 def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
-    let batchsize = 64i64
+    let batchsize = 128i64 in
+    let totalbatchsize = (1024i64/batchsize) in
     let boolen = [0u8, 1u8] in
     let input = [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
     --let target = [0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8, 0u8, 8u8] in
-    let target = [10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 6u8, 7u8] in
-    --let target = [0u8, 1u8, 2u8, 3u8, 0u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
+    --let target = [10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 10u8, 5u8, 5u8, 5u8, 5u8, 5u8, 5u8, 6u8, 7u8] in
+    let target = [0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8] in
 
     let depth = 5000i32 in
 
@@ -60,41 +61,47 @@ def main: (bool, []u8, []u8, []u8, []u8, []u8, []u8) =
     --        ) iotalen
     --    ) iotalen
     --) iotalen)))))) in
-    let (i1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (i1, i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i1 < batchsize) || res1) do
-    let (i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i2 < batchsize) || res1) do
-    let (i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i3 < batchsize) || res1) do
-    let (i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i4 < batchsize) || res1) do
-    let (i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-    loop (i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i5 < batchsize) || res1) do
+    --let (i1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    --loop (i1, i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i1 < totalbatchsize) || res1) do
+    --let (i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    --loop (i2, i3, i4, i5, i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, 0i64, 0i64, 0i64, 0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i2 < totalbatchsize) || res1) do
+    let (i3, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i3, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i3 < totalbatchsize) && res1 == false) do
+    let (i4, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i4, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i4 < totalbatchsize) && res1 == false) do
+    let (i5, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
+    loop (i5, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i5 < totalbatchsize) && res1 == false) do
         let (i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) =
-        loop (i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i6 < batchsize) || res1) do
+        loop (i6, res1, res2, res3, res4, res5, res6, res7) = (0i64, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16) while ((i6 < totalbatchsize) && res1 == false) do
             let (triplayer1, triplayer2) =
-            (unzip (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
-                map (\(l2: i64) ->
-                    map (\(l3: i64) ->
+            --(unzip (flatten (flatten (flatten (flatten (flatten (map (\(l1: i64) ->
+            (unzip (flatten (flatten (flatten (map (\(l3: i64) ->
+            --    map (\(l2: i64) ->
+            --        map (\(l3: i64) ->
                         map (\(l4: i64) ->
                             map (\(l5: i64) ->
                                 map (\(l6: i64) ->
-                                    ((layerp precalc l1 (layerp precalc l2 (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))))) == target), [i16.i64 l1, i16.i64 l2, i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6])
+                                    --((layerp precalc l1 (layerp precalc l2 (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))))) == target), [i16.i64 l1, i16.i64 l2, i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6])
+                                    if (layerp precalc l3 (layerp precalc l4 (layerp precalc l5 (layerp precalc l6 input))) == target) then (true, [i16.i64 l3, i16.i64 l4, i16.i64 l5, i16.i64 l6]) else (false, [])
                                 ) (map (\(i: i64) -> (i+(batchsize*i6))) (iota batchsize))
                             ) (map (\(i: i64) -> (i+(batchsize*i5))) (iota batchsize))
                         ) (map (\(i: i64) -> (i+(batchsize*i4))) (iota batchsize))
-                    ) (map (\(i: i64) -> (i+(batchsize*i3))) (iota batchsize))
-                ) (map (\(i: i64) -> (i+(batchsize*i2))) (iota batchsize))
-            ) (map (\(i: i64) -> (i+(batchsize*i1))) (iota batchsize))))))))) in
+            --        ) (map (\(i: i64) -> (i+(batchsize*i3))) (iota batchsize))
+            --    ) (map (\(i: i64) -> (i+(batchsize*i2))) (iota batchsize))
+            ) (map (\(i: i64) -> (i+(batchsize*i3))) (iota batchsize))))))) in
+            --) (map (\(i: i64) -> (i+(batchsize*i1))) (iota batchsize))))))))) in
 
             let getidx = (findidx true triplayer1) in
 
-            (i6+1, triplayer1[getidx], triplayer2[getidx, 0], triplayer2[getidx, 1], triplayer2[getidx, 2], triplayer2[getidx, 3], triplayer2[getidx, 4], triplayer2[getidx, 5]) in
-        (i5+1, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
-        (i4+1, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
-        (i3+1, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
-        (i2+1, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
-        (i1+1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+            if getidx == -1i64 then
+                (i6+1, false, 0i16, 0i16, 0i16, 0i16, 0i16, 0i16)
+            else
+                (i6+1, triplayer1[getidx], triplayer2[getidx, 0], triplayer2[getidx, 1], triplayer2[getidx, 2], triplayer2[getidx, 3], 0i16, 0i16) in
+        (i5+1, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i4+1, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        (i3+1, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        --(i2+1, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
+        --(i1+1, i2, i3, i4, i5, i6, triplayer1, triplayer2, triplayer3, triplayer4, triplayer5, triplayer6, triplayer7) in
         --(unzip4(triplayer))[0] in
         --(3u8, [0u8, 0u8, 0u8], true) in
 
