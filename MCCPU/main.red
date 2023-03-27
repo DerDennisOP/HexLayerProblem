@@ -6,7 +6,7 @@ lib fut
     #fur:2b = 0
     // inA = inB
     place [
-        0 0 0 inB input inA
+        0 0 0 0 input inA
         1 0 0 !inA output inB
     ]
 )

@@ -8,9 +8,10 @@ def get_all_start_tokens():
     return ["KEYWORD", "FUNCTION", "BRACKET", "VAR"]
 
 def interpret_place(tokens: list, i = 0):
-    next_token = ["STATIC"]
+    next_token = ["STATIC", "OPERATOR", "ONLY_NEG", "LIST"]
     expression = []
     coords = []
+    in_vars = 0
     next_val_neg = False
 
     while i < len(tokens):
@@ -26,11 +27,26 @@ def interpret_place(tokens: list, i = 0):
                     expression.append(("COORDINATES", coords))
                     coords = []
                     next_token = ["IDENTIFIER", "OPERATOR", "STATIC", "ONLY_NEG"]
+                elif len(coords) == 1 and len(expression) == 1 and expression[-1][0] == "COORDINATES":
+                    expression.append(("STATIC", coords[0]))
+                    coords = []
+                    next_token = ["IDENTIFIER", "CORDS_DONE"]
                 else:
                     next_token = ["STATIC", "OPERATOR", "ONLY_NEG"]
-            elif token[0] == "IDENTIFIER":
+            elif token[0] == "IDENTIFIER" and not "CORDS_DONE" in next_token:
                 expression.append(token)
-                next_token = ["IDENTIFIER"]
+                next_token = ["IDENTIFIER", "CORDS_DONE"]
+            elif token[0] == "IDENTIFIER" and "CORDS_DONE" in next_token:
+                if token[1] == "input" or token[1] == "output":
+                    expression.append(token)
+                    next_token = ["IDENTIFIER", "CORDS_DONE"]
+                    in_vars = 1
+                elif in_vars > 0:
+                    in_vars -= 1
+                    expression.append(token)
+                    if in_vars == 0:
+                        # next_token = ["STATIC", "OPERATOR", "ONLY_NEG", "LIST"]
+                        return (expression, i)
             elif token[0] == "OPERATOR":
                 if token[1] == "!" and not "ONLY_NEG" in next_token:
                     expression.append(token)
@@ -96,7 +112,7 @@ def interpret_expressions(tokens: list, i = 0):
                     return (expression, i)
             elif token[0] == "LIST":
                 if token[1] == "[":
-                    next_token = ["PLACE"]
+                    next_token = ["PLACE", "LIST"]
                 elif token[1] == "]":
                     return (expression, i)
         elif next_token[0] == "EXP" and i < len(tokens):
